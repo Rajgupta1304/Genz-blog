@@ -1,0 +1,50 @@
+{% extends "layout.html" %} {% block body %}
+<!-- Page Header-->
+<header
+  class="masthead"
+  style="background-image: url('{{  url_for('static',filename='assets/img/about-bg.jpg')}}"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+                            <h1>About Me</h1>
+                            <span class="subheading">This is what I do.</span>
+                        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- Main Content-->
+<main class="mb-4">
+  <div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <p>
+          GenZ-Blog is a modern digital platform created for the new generation
+          of thinkers, creators, and storytellers. Our mission is to bring
+          fresh, engaging, and relatable content that reflects the voice, ideas,
+          and interests of Gen Z. From trending topics and lifestyle insights to
+          technology, education, entertainment, and personal growth, we aim to
+          cover everything that matters to today’s youth.
+        </p>
+        <p>
+          At GenZ-Blog, we believe that everyone has a story worth sharing. Our
+          platform serves as a space where creativity meets expression, allowing
+          readers to explore diverse perspectives and stay updated with what’s
+          happening around the world. Whether you’re looking for informative
+          articles, opinion pieces, or simply something interesting to read,
+          GenZ-Blog is your go-to destination.
+        </p>
+        <p>
+          We are passionate about delivering content that is not only
+          informative but also easy to understand and enjoyable. Our goal is to
+          build a community where ideas are shared, voices are heard, and
+          knowledge grows together. Join us on this journey as we explore,
+          learn, and grow—one blog at a time.
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

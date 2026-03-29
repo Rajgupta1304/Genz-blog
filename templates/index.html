@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<!-- Page Header-->
+<header class="masthead" style="background-image: url('{{  url_for('static',filename='assets/img/genz-bg.jpg')}}')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading">
+                    <h1>{{ params['blog_name'] }}</h1>
+                    <span class="subheading">{{ params['tag_line']}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Main Content-->
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+
+            <!-- Post preview-->
+            <div class="post-preview">
+                {% for post in posts.items %}
+                <a href="/post/{{ post.slug }}">
+                    <h2 class="post-title text-light">{{ post.title }}</h2>
+                    <h4 class="post-subtitle text-light">
+                        {{ post.content | truncate(80, True, '...') }}
+                    </h4>
+                </a>
+                <p class="post-meta">
+                    Posted by <a href="#!">Raj Gupta</a>
+                    {{ post.date }}
+                </p>
+                {% endfor %}
+            </div>
+            <!-- Divider-->
+            <hr class="my-4" />
+            <!-- Pager-->
+            <div class="d-flex justify-content-between mt-4 mb-4">
+                <!-- Previous Button -->
+                {% if posts.has_prev %}
+                <a href="/page/{{ posts.prev_num }}" class="btn btn-outline-light rounded-pill">
+                    ← Previous
+                </a>
+                {% else %}
+                <span></span>
+                {% endif %}
+
+                <!-- Next Button -->
+                {% if posts.has_next %}
+                <a href="/page/{{ posts.next_num }}" class="btn btn-outline-light rounded-pill">
+                    Next →
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

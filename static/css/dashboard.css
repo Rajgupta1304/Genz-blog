@@ -1,0 +1,40 @@
+body {
+  background: linear-gradient(135deg, #0f172a, #020617);
+  color: white;
+}
+
+.card {
+  background: #0f172a;
+  border: none;
+  color: #fff;
+  border-radius: 16px;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px) scale(1.02);
+}
+
+.search-box {
+  background: #1e293b;
+  border: none;
+  color: white;
+}
+
+.search-box::placeholder {
+  color: #94a3b8;
+}
+
+.btn-gradient {
+  background: linear-gradient(45deg, #6366f1, #a855f7);
+  border: none;
+  color: white;
+}
+
+.btn-edit {
+  color: #38bdf8;
+}
+
+.btn-delete {
+  color: #f87171;
+}

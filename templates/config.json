@@ -1,0 +1,13 @@
+{
+    "params":
+    {
+        "local_server": "true" ,
+        "local_uri": "mysql://root:@localhost/genz-blog",
+        "prod_uri": "mysql://root:@localhost/new-name",
+        "blog_name": "GENZ-Blog",
+        "tag_line": "We share stories, trends, and ideas that define our generation.",
+        "admin_email": "AR@gmail.com",
+        "admin_password": "anjalirajgupta108",
+        "upload_location": "C:\\Users\\SONY\\Desktop\\genz-blog project\\static\\assets"
+    }
+}
