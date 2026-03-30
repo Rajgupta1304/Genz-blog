@@ -1,72 +1,45 @@
-
-# from flask import Flask , render_template , request , session, redirect
-# from flask_sqlalchemy import SQLAlchemy
-# from datetime import datetime
-# from werkzeug.utils import secure_filename
-# import pymysql
-# import json
-# import os
-# pymysql.install_as_MySQLdb()
-# from dotenv import load_dotenv
-
-# load_dotenv()
-
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_URL")
-# app.secret_key = os.getenv("SECRET_KEY")
-
-# with open('./templates/config.json', 'r') as c:
-#     params = json.load(c)["params"]
-
-# local_server = "true"
-
-# app = Flask(__name__)
-# app.secret_key = 'super-secret-key'
-# app.config['upload_folder'] = params['upload_location']
-
-# if(local_server):
-#     app.config['SQLALCHEMY_DATABASE_URI'] = params['local_uri']
-# else:
-#      app.config['SQLALCHEMY_DATABASE_URI'] = params['prod_uri']
-
-# db = SQLAlchemy(app)
-
-
-
 from flask import Flask, render_template, request, session, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.utils import secure_filename
-import pymysql
-import json
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 
-pymysql.install_as_MySQLdb()
+# 🌱 Load env
 load_dotenv()
 
 app = Flask(__name__)
 
-# 🔐 Secret key from .env
+# 🔐 Secret key
 app.secret_key = os.getenv("SECRET_KEY")
 
-# 📁 Config file
-with open('./templates/config.json', 'r') as c:
-    params = json.load(c)["params"]
+# ⚙️ Params (non-sensitive + useful stuff)
+params = {
+    "blog_name": os.getenv("BLOG_NAME"),
+    "tag_line": os.getenv("TAG_LINE"),
+    "admin_email": os.getenv("ADMIN_EMAIL"),
+    "admin_password": os.getenv("ADMIN_PASSWORD"),
+    "upload_location": os.getenv("UPLOAD_LOCATION")
+}
 
 # 📂 Upload folder
-app.config['UPLOAD_FOLDER'] = params['upload_location']
+app.config['UPLOAD_FOLDER'] = params["upload_location"]
 
-# 🌐 Database (AUTO detect local vs production)
-if os.getenv("DB_URL"):
-    # 👉 Production (Render / Supabase)
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_URL")
-else:
-    # 👉 Local (your PC)
-    app.config['SQLALCHEMY_DATABASE_URI'] = params['local_uri']
+# 🌐 Supabase PostgreSQL (ONLY THIS)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_URL")
 
+# ⚠️ Required for Supabase (SSL)
+if "supabase" in str(os.getenv("DB_URL")):
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        "connect_args": {"sslmode": "require"}
+    }
+
+# ✅ Recommended
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# 🗄️ Init DB
 db = SQLAlchemy(app)
-
-
 
 
 
@@ -74,20 +47,27 @@ db = SQLAlchemy(app)
 class Contact(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
-    phone_number = db.Column(db.String(12), nullable=False)
-    message = db.Column(db.String(120), nullable=False)
-    date = db.Column(db.String(12), nullable=False)
-    email = db.Column(db.String(20), nullable=False)
+    phone_number = db.Column(db.String(20), nullable=False)  
+    message = db.Column(db.Text, nullable=False)  
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    email = db.Column(db.String(100), nullable=False)
 
 class Post(db.Model):
-    sno = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    slug = db.Column(db.String(50), nullable=False)
-    content = db.Column(db.String(300), nullable=False)
-    img_file = db.Column(db.String(30), nullable=False)
-    date = db.Column(db.String(12), nullable=False)
- 
+    __tablename__ = "post"
 
+    sno = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
+    title = db.Column(db.String(200), nullable=False)
+    slug = db.Column(db.String(150), nullable=False, unique=True)
+
+    content = db.Column(db.Text, nullable=False)   # ✅ unlimited text
+
+    img_file = db.Column(db.String(200), nullable=True)
+
+    date = db.Column(db.DateTime, default=datetime.utcnow)  # ✅ auto date
+
+    def __repr__(self):
+        return f"<Post {self.title}>"
 
 @app.route("/")
 @app.route("/page/<int:page>")
@@ -159,7 +139,7 @@ def edit(sno):
             date = datetime.now()
 
             if sno=='0':
-                post = Post(sno=sno, title=p_title, slug= p_slug, content=p_content, img_file= p_img ,date=date)
+                post = Post(title=p_title, slug= p_slug, content=p_content, img_file= p_img ,date=date)
                 db.session.add(post)
                 db.session.commit()
 
@@ -193,7 +173,7 @@ def upload():
     if ('user' in session and session['user'] == params['admin_email']):
         if request.method == 'POST':
             f = request.files['file_upload']
-            f.save(os.path.join(app.config['upload_folder'], secure_filename(f.filename)))
+            f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
         return redirect("/dashboard")
 
 
