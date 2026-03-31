@@ -42,7 +42,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # 🗄️ Init DB
 db = SQLAlchemy(app)
 
-
+@app.context_processor
+def inject_globals():
+    return dict(
+        blog_name=os.getenv("BLOG_NAME"),
+        blog_tagline=os.getenv("BLOG_TAGLINE")
+    )
 
 # sno, name ,email, mob,message,date
 class Contact(db.Model):
