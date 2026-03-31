@@ -46,7 +46,7 @@ db = SQLAlchemy(app)
 def inject_globals():
     return dict(
         blog_name=os.getenv("BLOG_NAME"),
-        blog_tagline=os.getenv("BLOG_TAGLINE")
+        blog_tagline=os.getenv("TAG_LINE")
     )
 
 # sno, name ,email, mob,message,date
