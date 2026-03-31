@@ -133,7 +133,7 @@ def dashboard():
             flash("Invalid credentials!", "danger")
 
     # ✅ Default → login page
-    return render_template('login.html')
+    return render_template('login.html',params=params)
 
 
 
