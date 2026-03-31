@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect,flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.utils import secure_filename
@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime
 
-# 🌱 Load env
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -32,7 +32,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_URL")
 # ⚠️ Required for Supabase (SSL)
 if "supabase" in str(os.getenv("DB_URL")):
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-        "connect_args": {"sslmode": "require"}
+        "connect_args": {"sslmode": "require"},
+        "pool_pre_ping": True
     }
 
 # ✅ Recommended
@@ -111,20 +112,28 @@ def contact():
 
 
 
-@app.route("/dashboard",methods=['GET','POST'])
-def dashbord():
-    posts = Post.query.filter_by().all()
-    if ('user' in session and session['user'] == params['admin_email']):
-        return render_template('dashboard.html',posts=posts)
-    
+@app.route("/dashboard", methods=['GET', 'POST'])
+def dashboard():
+    # Agar already login hai → dashboard dikhao
+    if 'user' in session and session['user'] == os.getenv("ADMIN_EMAIL"):
+        posts = Post.query.all()
+        return render_template('dashboard.html', posts=posts)
+
+    #  Login attempt handle karo
     if request.method == "POST":
         username = request.form.get('email')
-        userproof = request.form.get('password')
-        if (username == params['admin_email'] and userproof == params['admin_password']):
-            session['user'] = username
-            return render_template('dashboard.html',posts=posts)
+        password = request.form.get('password')
 
-    return render_template('login.html', params=params)
+        if username == os.getenv("ADMIN_EMAIL") and password == os.getenv("ADMIN_PASSWORD"):
+            session['user'] = username
+            flash("Login successful!", "success")
+            return redirect("/dashboard")   # 🔥 IMPORTANT (no render here)
+
+        else:
+            flash("Invalid credentials!", "danger")
+
+    # ✅ Default → login page
+    return render_template('login.html')
 
 
 

@@ -84,6 +84,13 @@
   <div class="card">
     <h2>Admin-Login</h2>
     <form action="/dashboard" method="POST">
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+      {% endwith %}
+
       <input type="email" name="email" placeholder="Enter your email..." />
       <input type="password" name="password" placeholder="Enter your password..." />
       <button type="submit">Login</button>
