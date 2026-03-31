@@ -116,29 +116,30 @@ def contact():
     return render_template('contact.html', params=params)
 
 
-
 @app.route("/dashboard", methods=['GET', 'POST'])
 def dashboard():
-    # Agar already login hai → dashboard dikhao
-    if 'user' in session and session['user'] == os.getenv("ADMIN_EMAIL"):
+
+    # ✅ Already logged in
+    if 'user' in session and session['user'] == params['admin_email']:
         posts = Post.query.all()
         return render_template('dashboard.html', posts=posts)
 
-    #  Login attempt handle karo
+    # ✅ Login attempt
     if request.method == "POST":
         username = request.form.get('email')
         password = request.form.get('password')
 
-        if username == os.getenv("ADMIN_EMAIL") and password == os.getenv("ADMIN_PASSWORD"):
+        print("Entered:", username, password)
+        print("Actual:", params['admin_email'], params['admin_password'])
+
+        if username == params['admin_email'] and password == params['admin_password']:
             session['user'] = username
             flash("Login successful!", "success")
-            return redirect("/dashboard")   # 🔥 IMPORTANT (no render here)
-
+            return redirect("/dashboard")
         else:
             flash("Invalid credentials!", "danger")
 
-    # ✅ Default → login page
-    return render_template('login.html',params=params)
+    return render_template('login.html', params=params)
 
 
 
