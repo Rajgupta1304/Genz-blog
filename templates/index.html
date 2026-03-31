@@ -25,7 +25,7 @@
                 <a href="/post/{{ post.slug }}">
                     <h2 class="post-title text-light">{{ post.title }}</h2>
                     <h4 class="post-subtitle text-light">
-                        {{ post.content | truncate(80, True, '...') }}
+                        {{ post.content | truncate(80, True, '...')| striptags  }}
                     </h4>
                 </a>
                 <p class="post-meta">
